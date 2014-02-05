@@ -1,6 +1,6 @@
 # Icecast Server Setup
 
-Author: Daniel "MaTachi" Jonsson
+Author: Daniel "MaTachi" Jonsson  
 License: [MIT License](LICENSE)
 
 ## Features:
