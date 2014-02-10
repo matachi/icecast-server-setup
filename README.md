@@ -5,8 +5,8 @@ License: [MIT License](LICENSE)
 
 ## Features:
 
-* **Distribution:** Debian 8 Jessie
-* **Server:** Icecast2
+* **Distribution:** Debian 7 Wheezy
+* **Server:** Icecast2.3.3-kh9
 * **Source:** mpd
 
 ## Setup

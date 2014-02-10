@@ -1,13 +1,34 @@
-FROM debian:jessie
+FROM debian:latest
 
 RUN apt-get update
 
 ######################################################################
 # Icecast
 ######################################################################
-RUN apt-get install -y icecast2
-RUN sed -i 's/^ENABLE=false$/ENABLE=true/' /etc/default/icecast2
-RUN sed -i 's/^\(<\/icecast>\)$/    <mount>\n        <mount-name>\/stream.ogg<\/mount-name>\n        <authentication type="url">\n            <option name="listener_add" value="http:\/\/127\.0\.0\.1:5000\/auth"\/>\n        <\/authentication>\n    <\/mount>\n\1/' /etc/icecast2/icecast.xml
+
+RUN apt-get install -y wget
+RUN wget --no-check-certificate http://github.com/karlheyes/icecast-kh/archive/icecast-2.3.3-kh9.tar.gz
+RUN tar xvfz icecast-2.3.3-kh9.tar.gz
+RUN apt-get install -y build-essential
+RUN apt-get install -y libxml2-dev libxslt1-dev curl libcurl4-openssl-dev libvorbis-dev libogg-dev
+RUN cd icecast-kh-icecast-2.3.3-kh9 && ./configure
+RUN cd icecast-kh-icecast-2.3.3-kh9 && make
+RUN cd icecast-kh-icecast-2.3.3-kh9 && make install
+RUN mkdir -p /usr/local/var/log
+RUN useradd user -m
+RUN cp /usr/local/etc/icecast.xml /home/user/.
+RUN chown user /home/user/icecast.xml
+RUN mkdir -p /usr/local/var/log/icecast
+RUN touch /usr/local/var/log/icecast/error.log
+RUN chown user /usr/local/var/log/icecast
+RUN apt-get install -y sudo mime-support
+RUN sed -i 's/^\(<\/icecast>\)$/\
+    <mount>\
+        <mount-name>\/stream.ogg<\/mount-name>\
+        <authentication type="url">\
+            <option name="listener_add" value="http:\/\/127\.0\.0\.1:5000\/auth"\/>\
+        <\/authentication>\
+    <\/mount>\n\1/' /home/user/icecast.xml
 
 # The mount being inserted:
 #
@@ -47,7 +68,6 @@ RUN echo "from flask import Flask\nfrom flask import make_response\nfrom subproc
 
 RUN apt-get install -y mpc mpd
 RUN sed -i 's/^\(audio_output\)/audio_output \{\n  type            "shout"\n  name            "RasPi MPD Stream"\n  description     "MPD stream on Raspberry Pi"\n  host            "localhost"\n  port            "8000"\n  mount           "\/stream\.ogg"\n  password        "hackme"\n  bitrate         "128"\n  format          "44100:16:2"\n  encoding        "ogg"\n  protocol        "icecast2"\n\}\n\n\1/' /etc/mpd.conf
-RUN apt-get install -y wget
 RUN wget http://www.jonobacon.org/files/freesoftwaresong/jonobacon-freesoftwaresong2.ogg
 RUN mv jonobacon-freesoftwaresong2.ogg /var/lib/mpd/music/.
 
@@ -55,8 +75,8 @@ RUN mv jonobacon-freesoftwaresong2.ogg /var/lib/mpd/music/.
 #
 #     audio_output {
 #       type            "shout"
-#       name            "RasPi MPD Stream"
-#       description     "MPD stream on Raspberry Pi"
+#       name            "Stream"
+#       description     "MPD stream"
 #       host            "localhost"
 #       port            "8000"
 #       mount           "/stream.ogg"
@@ -71,4 +91,4 @@ RUN mv jonobacon-freesoftwaresong2.ogg /var/lib/mpd/music/.
 # CMD
 ######################################################################
 
-CMD /etc/init.d/icecast2 start && /etc/init.d/mpd start && mpc update && mpc ls | mpc add && mpc repeat on && bash
+CMD sudo -u user icecast -b -c /home/user/icecast.xml && /etc/init.d/mpd start && mpc update && mpc ls | mpc add && mpc repeat on && mpc play && bash
