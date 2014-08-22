@@ -8,15 +8,15 @@ RUN apt-get update
 
 # Download Icecast kh source and build tools
 RUN apt-get install -y wget
-RUN wget --no-check-certificate http://github.com/karlheyes/icecast-kh/archive/icecast-2.3.3-kh9.tar.gz
-RUN tar xvfz icecast-2.3.3-kh9.tar.gz
+RUN wget --no-check-certificate http://github.com/karlheyes/icecast-kh/archive/icecast-2.3.3-kh10.tar.gz
+RUN tar xvfz icecast-2.3.3-kh10.tar.gz
 RUN apt-get install -y build-essential
 RUN apt-get install -y libxml2-dev libxslt1-dev curl libcurl4-openssl-dev libvorbis-dev libogg-dev
 
 # Compile and install
-RUN cd icecast-kh-icecast-2.3.3-kh9 && ./configure
-RUN cd icecast-kh-icecast-2.3.3-kh9 && make
-RUN cd icecast-kh-icecast-2.3.3-kh9 && make install
+RUN cd icecast-kh-icecast-2.3.3-kh10 && ./configure
+RUN cd icecast-kh-icecast-2.3.3-kh10 && make
+RUN cd icecast-kh-icecast-2.3.3-kh10 && make install
 
 # Create user
 RUN useradd -d /home/user -m user
