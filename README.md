@@ -5,9 +5,9 @@ License: [MIT License](LICENSE)
 
 ## Features:
 
-* **Distribution:** Debian 7 Wheezy
-* **Server:** Icecast2.3.3-kh9
-* **Source:** Liquidsoap from Debian testing
+* **Distribution:** Debian 8 Jessie
+* **Server:** Icecast2.3.3-kh10
+* **Source:** Liquidsoap
 * **Audio codec:** It's set up to stream in Opus. However, Vorbis works fine
   too.
 
