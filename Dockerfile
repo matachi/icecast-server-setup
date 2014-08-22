@@ -50,8 +50,13 @@ RUN sed -i 's/^\(<\/icecast>\)$/\
 # Liquidsoap
 ######################################################################
 
-# Install Liquidsoap
-RUN apt-get install -y liquidsoap liquidsoap-plugin-opus
+# Compile Liquidsoap
+# The pre-built version of Liquidsoap seems to have some issues
+RUN apt-get build-dep -y liquidsoap
+RUN apt-get source -y liquidsoap
+RUN cd liquidsoap-1.1.1 && ./configure
+RUN cd liquidsoap-1.1.1 && make
+RUN cd liquidsoap-1.1.1 && make install
 
 # Download sample song
 RUN wget http://www.jonobacon.org/files/freesoftwaresong/jonobacon-freesoftwaresong2.ogg
