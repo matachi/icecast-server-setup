@@ -5,7 +5,7 @@ License: [MIT License](LICENSE)
 
 ## Features:
 
-* **Distribution:** Debian 8 Jessie
+* **Distribution:** Ubuntu 14.04
 * **Server:** Icecast2.3.3-kh10
 * **Source:** Liquidsoap
 * **Audio codec:** It's set up to stream in Opus. However, Vorbis works fine

@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM ubuntu:trusty
 
 RUN apt-get update
 RUN apt-get dist-upgrade -y
@@ -113,7 +113,7 @@ RUN histchars=$h
 # Script
 ######################################################################
 
-RUN apt-get install -y python3 python3-pip
+RUN apt-get install -y python3-pip
 RUN pip3 install Flask
 RUN echo "from flask import Flask\nfrom flask import make_response\nimport time\napp = Flask(__name__)\n\n@app.route('/auth', methods=['POST'])\ndef auth():\n    # Start Liquidsoap here\n    time.sleep(1)\n    resp = make_response('', 200)\n    resp.headers['icecast-auth-user'] = 1\n    return resp\n\nif __name__ == '__main__':\n    app.run()" > /home/user/auth.py
 
