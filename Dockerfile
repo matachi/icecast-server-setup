@@ -1,6 +1,7 @@
-FROM debian:latest
+FROM debian:jessie
 
 RUN apt-get update
+RUN apt-get dist-upgrade -y
 
 ######################################################################
 # Icecast
@@ -49,11 +50,8 @@ RUN sed -i 's/^\(<\/icecast>\)$/\
 # Liquidsoap
 ######################################################################
 
-# Install Liquidsoap from the testing repository
-RUN echo "\ndeb http://http.debian.net/debian testing main" >> /etc/apt/sources.list
-RUN echo "Package: *\nPin: release a=testing\nPin-Priority: -10" > /etc/apt/preferences
-RUN apt-get update
-RUN apt-get install -y -t testing liquidsoap liquidsoap-plugin-opus
+# Install Liquidsoap
+RUN apt-get install -y liquidsoap liquidsoap-plugin-opus
 
 # Download sample song
 RUN wget http://www.jonobacon.org/files/freesoftwaresong/jonobacon-freesoftwaresong2.ogg
@@ -115,7 +113,7 @@ RUN histchars=$h
 # Script
 ######################################################################
 
-RUN apt-get install -y -t testing python3 python3-pip
+RUN apt-get install -y python3 python3-pip
 RUN pip3 install Flask
 RUN echo "from flask import Flask\nfrom flask import make_response\nimport time\napp = Flask(__name__)\n\n@app.route('/auth', methods=['POST'])\ndef auth():\n    # Start Liquidsoap here\n    time.sleep(1)\n    resp = make_response('', 200)\n    resp.headers['icecast-auth-user'] = 1\n    return resp\n\nif __name__ == '__main__':\n    app.run()" > /home/user/auth.py
 
